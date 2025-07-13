@@ -3,13 +3,11 @@ import time
 import random
 from telebot import TeleBot
 
-# Token e ID del canale
 TOKEN = "7267062520:AAHPb1Wy1VbsvZ9qBYO-pbaQ6G7PqQbF_KQ"
 CHANNEL_ID = -1002755987703  # @mangagaming_deals
 
 bot = TeleBot(TOKEN)
 
-# Lista giochi (aggiungi qui tutti quelli che vuoi)
 giochi = [
     {
         "titolo": "Elden Ring (PC)",
@@ -31,30 +29,19 @@ giochi = [
     }
 ]
 
-def immagine_valida(url):
-    try:
-        response = requests.get(url)
-        return response.status_code == 200
-    except:
-        return False
-
 def pubblica_offerta():
     gioco = random.choice(giochi)
+
     testo = f"""🎮 <b>{gioco['titolo']}</b>
 💰 Prezzo: <b>{gioco['prezzo']}</b>
 🛒 <a href="{gioco['link']}">Clicca qui per acquistare</a>"""
 
-    if immagine_valida(gioco["immagine"]):
-        try:
-            bot.send_photo(CHANNEL_ID, gioco["immagine"], caption=testo, parse_mode="HTML")
-        except Exception as e:
-            print("Errore nell'invio con immagine:", e)
-            bot.send_message(CHANNEL_ID, testo, parse_mode="HTML")
-    else:
-        print("Immagine non valida, invio solo testo.")
-        bot.send_message(CHANNEL_ID, testo, parse_mode="HTML")
+    try:
+        bot.send_photo(CHANNEL_ID, gioco["immagine"], caption=testo, parse_mode="HTML")
+        print(f"Inviato: {gioco['titolo']}")
+    except Exception as e:
+        print(f"Errore: {e}")
 
-# Ciclo ogni ora
 while True:
     pubblica_offerta()
     time.sleep(3600)
