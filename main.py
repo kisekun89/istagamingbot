@@ -3,52 +3,49 @@ import requests
 import time
 from bs4 import BeautifulSoup
 
-# === CONFIGURAZIONE ===
+# === CONFIG ===
 BOT_TOKEN = '7267062520:AAHPb1Wy1VbsvZ9qBYO-pbaQ6G7PqQbF_KQ'
 CHANNEL_ID = '@mangagaming_deals'
 AFFILIATE_CODE = '?igr=gamer-1ded01f'
 
-# === FUNZIONE PER OTTENERE OFFERTE DA INSTANT GAMING ===
+# === FUNZIONE PER OTTENERE OFFERTE ===
 def get_offer():
     url = 'https://www.instant-gaming.com/it/offerte/'
     headers = {'User-Agent': 'Mozilla/5.0'}
-    response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    r = requests.get(url, headers=headers)
+    soup = BeautifulSoup(r.content, 'html.parser')
 
-    # Trova il primo gioco (nuovo selettore)
-    game = soup.find('div', class_='item force-badge')
-
+    # Trova primo gioco
+    game = soup.select_one('div.cover a')
     if not game:
         print("❌ Nessuna offerta trovata.")
         return None
 
-    title = game.find('div', class_='name').text.strip()
-    price = game.find('div', class_='price').text.strip()
-    link = 'https://www.instant-gaming.com' + game.find('a')['href'] + AFFILIATE_CODE
+    title = game.get('title').strip()
+    link = 'https://www.instant-gaming.com' + game.get('href') + AFFILIATE_CODE
+    img = game.select_one('img').get('src')
+    price_tag = game.select_one('div.price')
+    price = price_tag.text.strip() if price_tag else 'Prezzo non disponibile'
 
-    print("🎮 TITOLO:", title)
-    print("💸 PREZZO:", price)
-    print("🔗 LINK:", link)
+    message = f"🎮 <b>{title}</b>\n💸 Prezzo: <b>{price}</b>\n🔗 <a href='{link}'>Acquista su Instant Gaming</a>"
+    return message, img
 
-    messaggio = f"🎮 <b>{title}</b>\n💸 Prezzo: <b>{price}</b>\n🔗 <a href='{link}'>Clicca qui per acquistare</a>"
-    return messaggio
-
-# === INVIA MESSAGGIO SU TELEGRAM ===
+# === INVIA MESSAGGIO TELEGRAM ===
 def invia_messaggio(bot):
     try:
-        messaggio = get_offer()
-        if messaggio:
-            bot.send_message(CHANNEL_ID, messaggio, parse_mode='HTML')
-            print("✅ Offerta inviata. Attendo 1 ora...\n")
+        offer = get_offer()
+        if offer:
+            message, image = offer
+            bot.send_photo(CHANNEL_ID, image, caption=message, parse_mode='HTML')
+            print("✅ Offerta inviata.")
         else:
             print("⚠️ Nessun messaggio da inviare.")
     except Exception as e:
-        print(f'❌ Errore nell’invio: {e}')
+        print(f"❌ Errore invio: {e}")
 
-# === AVVIO BOT ===
+# === LOOP PRINCIPALE ===
 if __name__ == '__main__':
     bot = telebot.TeleBot(BOT_TOKEN)
-
     while True:
         invia_messaggio(bot)
         time.sleep(3600)  # ogni ora
