@@ -3,19 +3,18 @@ import time
 import telebot
 from bs4 import BeautifulSoup
 
-# === CONFIG ===
-TOKEN = '7267062520:AAHPb1Wy1VbsvZ9qBYO-pbaQ6G7PqQbF_KQ'
+# === CONFIGURAZIONE ===
+TOKEN = "7267062520:AAHPb1Wy1VbsvZ9qBYO-pbaQ6G7PqQbF_KQ"
 CHANNEL_ID = "@mangagaming_deals"
 AFFILIATE_TAG = "?igr=gamer-1ded01f"
 
 URLS = [
-    "https://www.instant-gaming.com/it/ricerca/?platform%5B0%5D=1",
-    "https://www.instant-gaming.com/it/ricerca/?platform%5B0%5D=2",
-    "https://www.instant-gaming.com/it/ricerca/?platform%5B0%5D=3",
-    "https://www.instant-gaming.com/it/ricerca/?platform%5B0%5D=4"
+    "https://www.instant-gaming.com/it/ricerca/?platform%5B0%5D=1",  # PC
+    "https://www.instant-gaming.com/it/ricerca/?platform%5B0%5D=2",  # PlayStation
+    "https://www.instant-gaming.com/it/ricerca/?platform%5B0%5D=3",  # Xbox
+    "https://www.instant-gaming.com/it/ricerca/?platform%5B0%5D=4"   # Nintendo Switch
 ]
 
-# === AVVIO ===
 bot = telebot.TeleBot(TOKEN)
 
 def estrai_offerte(url):
@@ -37,7 +36,9 @@ def estrai_offerte(url):
             titolo_txt = titolo.text.strip()
             prezzo_txt = prezzo.text.strip()
             link_url = "https://www.instant-gaming.com" + link["href"] + AFFILIATE_TAG
-            img_url = img["src"]
+            img_url = img.get("src")
+            if not img_url or not img_url.startswith("http"):
+                continue
 
             giochi.append({
                 "titolo": titolo_txt,
@@ -60,7 +61,6 @@ def invia_offerta(gioco):
     except Exception as e:
         print(f"❌ Errore invio: {e}")
 
-# === MAIN LOOP ===
 if __name__ == "__main__":
     tutte = []
     for url in URLS:
@@ -68,6 +68,6 @@ if __name__ == "__main__":
         time.sleep(2)
 
     if tutte:
-        invia_offerta(tutte[0])  # puoi cambiare per inviarne più di una
+        invia_offerta(tutte[0])
     else:
         print("⚠️ Nessuna offerta trovata.")
