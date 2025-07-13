@@ -46,7 +46,7 @@ def pubblica_offerta():
 
     if immagine_valida(gioco["immagine"]):
         try:
-            bot.send_photo(CHANNEL_ID, gioco["immagine"], caption=teso, parse_mode="HTML")
+            bot.send_photo(CHANNEL_ID, gioco["immagine"], caption=testo, parse_mode="HTML")
         except Exception as e:
             print("Errore nell'invio con immagine:", e)
             bot.send_message(CHANNEL_ID, testo, parse_mode="HTML")
