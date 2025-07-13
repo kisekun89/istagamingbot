@@ -8,7 +8,6 @@ CHANNEL_ID = -1002755987703  # @mangagaming_deals
 
 bot = TeleBot(TOKEN)
 
-# Lista di giochi da Instant Gaming (puoi aggiungerne altri)
 giochi = [
     {
         "titolo": "Elden Ring (PC)",
@@ -37,11 +36,11 @@ def pubblica_offerta():
 🛒 <a href="{gioco['link']}">Clicca qui per acquistare</a>"""
 
     try:
-        bot.send_photo(CHANNEL_ID, gioco['immagine'], caption=teso, parse_mode='HTML')
+        bot.send_photo(CHANNEL_ID, gioco['immagine'], caption=testo, parse_mode='HTML')
         print(f"Inviato: {gioco['titolo']}")
     except Exception as e:
         print(f"Errore: {e}")
 
 while True:
     pubblica_offerta()
-    time.sleep(3600)  # ogni ora
+    time.sleep(3600)
