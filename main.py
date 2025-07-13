@@ -13,49 +13,45 @@ def get_offer():
     response = requests.get(url, headers=headers)
 
     if response.status_code != 200:
-        print("❌ Errore HTTP.")
         return None
 
     soup = BeautifulSoup(response.text, 'html.parser')
     first_game = soup.select_one('.item')
 
     if not first_game:
-        print("❌ Nessuna offerta trovata.")
         return None
 
     title = first_game.select_one('.name').get_text(strip=True)
     price = first_game.select_one('.price').get_text(strip=True)
 
-    # Verifica presenza immagine
     image_tag = first_game.select_one('img')
-    image = image_tag['src'] if image_tag and image_tag.get('src') else None
+    image = image_tag['data-src'] if image_tag and image_tag.has_attr('data-src') else None
 
-    a_tag = first_game.select_one('a')
-    if not a_tag or not a_tag.get('href'):
-        print("❌ Link non trovato.")
+    link_tag = first_game.select_one('a')
+    if not link_tag or not link_tag.get('href'):
         return None
 
-    link = 'https://www.instant-gaming.com' + a_tag.get('href') + AFFILIATE_CODE
-    messaggio = f"🎮 <b>{title}</b>\n💸 Prezzo: <b>{price}</b>\n🔗 <a href='{link}'>Compra ora su Instant Gaming</a>"
-    return messaggio, image
+    link = 'https://www.instant-gaming.com' + link_tag.get('href') + AFFILIATE_CODE
+    message = f"🎮 <b>{title}</b>\n💸 Prezzo: <b>{price}</b>\n👉 <a href='{link}'>Compra ora su Instant Gaming</a>"
+    return message, image
 
-def invia_messaggio(bot):
+def send_offer(bot):
     try:
-        offerta = get_offer()
-        if offerta:
-            messaggio, immagine = offerta
-            if immagine:
-                bot.send_photo(CHANNEL_ID, immagine, caption=messaggio, parse_mode='HTML')
+        offer = get_offer()
+        if offer:
+            message, image = offer
+            if image and image.startswith('http'):
+                bot.send_photo(CHANNEL_ID, image, caption=message, parse_mode='HTML')
             else:
-                bot.send_message(CHANNEL_ID, messaggio, parse_mode='HTML')
+                bot.send_message(CHANNEL_ID, message, parse_mode='HTML')
             print("✅ Offerta inviata.")
         else:
-            print("⚠️ Nessun messaggio da inviare.")
+            print("⚠️ Nessuna offerta trovata.")
     except Exception as e:
         print(f"❌ Errore invio: {e}")
 
 if __name__ == '__main__':
     bot = telebot.TeleBot(BOT_TOKEN)
     while True:
-        invia_messaggio(bot)
+        send_offer(bot)
         time.sleep(3600)
