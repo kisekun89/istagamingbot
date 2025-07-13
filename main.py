@@ -10,31 +10,37 @@ AFFILIATE_CODE = '?igr=gamer-1ded01f'
 
 # === FUNZIONE OFFERTA ===
 def get_offer():
-    url = 'https://www.instant-gaming.com/it/pc/'  # Pagina meno protetta
+    url = 'https://www.instant-gaming.com/it/pc/'
     headers = {'User-Agent': 'Mozilla/5.0'}
     response = requests.get(url, headers=headers)
 
     if response.status_code != 200:
-        print("❌ Errore nella richiesta HTTP.")
+        print("❌ Errore HTTP.")
         return None
 
     soup = BeautifulSoup(response.text, 'html.parser')
     first_game = soup.select_one('.item')
 
     if not first_game:
-        print("❌ Nessuna offerta trovata nel parsing.")
+        print("❌ Nessuna offerta trovata.")
         return None
 
-    # Estrazione dati
     title = first_game.select_one('.name').get_text(strip=True)
     price = first_game.select_one('.price').get_text(strip=True)
     image = first_game.select_one('img')['src']
-    link = 'https://www.instant-gaming.com' + first_game['href'] + AFFILIATE_CODE
+
+    # Prendiamo il link corretto dal tag <a>
+    a_tag = first_game.select_one('a')
+    if not a_tag or not a_tag.get('href'):
+        print("❌ Link non trovato.")
+        return None
+
+    link = 'https://www.instant-gaming.com' + a_tag.get('href') + AFFILIATE_CODE
 
     messaggio = f"🎮 <b>{title}</b>\n💸 Prezzo: <b>{price}</b>\n🔗 <a href='{link}'>Compra ora su Instant Gaming</a>"
     return messaggio, image
 
-# === INVIA MESSAGGIO ===
+# === INVIO ===
 def invia_messaggio(bot):
     try:
         offerta = get_offer()
@@ -52,4 +58,4 @@ if __name__ == '__main__':
     bot = telebot.TeleBot(BOT_TOKEN)
     while True:
         invia_messaggio(bot)
-        time.sleep(3600)
+        time.sleep(3600)  # ogni ora
