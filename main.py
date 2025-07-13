@@ -13,19 +13,19 @@ giochi = [
         "titolo": "Elden Ring (PC)",
         "link": "https://www.instant-gaming.com/it/10854-comprare-elden-ring-pc-gioco-steam/?igr=gamer-1ded01f",
         "prezzo": "29.99€",
-        "immagine": "https://images-ig.gamingcdn.net/38d9b646-ae94-4a89-89c4-1847f89a053e/elden-ring-pc-gioco-steam-cover.jpg"
+        "immagine": "https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/header.jpg"
     },
     {
         "titolo": "EA FC 24 (PS5)",
         "link": "https://www.instant-gaming.com/it/15352-comprare-ea-sports-fc-24-ps5-gioco-psn/?igr=gamer-1ded01f",
         "prezzo": "24.99€",
-        "immagine": "https://images-ig.gamingcdn.net/0ad06209-2548-4c4e-a95c-4584981aa977/ea-sports-fc-24-ps5-gioco-psn-cover.jpg"
+        "immagine": "https://www.mobygames.com/images/covers/l/747484-ea-sports-fc-24-playstation-5-front-cover.jpg"
     },
     {
         "titolo": "Zelda: Tears of the Kingdom (Switch)",
         "link": "https://www.instant-gaming.com/it/14868-comprare-the-legend-of-zelda-tears-of-the-kingdom-switch-gioco-nintendo/?igr=gamer-1ded01f",
         "prezzo": "39.90€",
-        "immagine": "https://images-ig.gamingcdn.net/fb0e54f3-5a2f-4c9d-a6b6-5480ce5f93fc/the-legend-of-zelda-tears-of-the-kingdom-switch-gioco-nintendo-cover.jpg"
+        "immagine": "https://cdn.akamai.steamstatic.com/steam/apps/239160/header.jpg?t=1674509562"  # esempio alternativo per sicurezza
     }
 ]
 
@@ -43,4 +43,4 @@ def pubblica_offerta():
 
 while True:
     pubblica_offerta()
-    time.sleep(3600)  # ogni ora
+    time.sleep(3600)
