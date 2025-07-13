@@ -34,7 +34,7 @@ def pubblica_offerta():
     testo = f"<b>{gioco['titolo']}</b>\nPrezzo: <b>{gioco['prezzo']}</b>\n<a href='{gioco['link']}'>Clicca qui per acquistare</a>"
 
     try:
-        bot.send_photo(CHANNEL_ID, gioco['immagine'], caption=testo, parse_mode='HTML')
+        bot.send_message(CHANNEL_ID, messaggio, parse_mode='HTML')
         print(f"Inviato: {gioco['titolo']}")
     except Exception as e:
         print(f"Errore: {e}")
