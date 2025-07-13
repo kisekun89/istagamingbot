@@ -9,24 +9,36 @@ CHANNEL_ID = -1002755987703  # @mangagaming_deals
 bot = TeleBot(TOKEN)
 
 giochi = [
-    {
-        "titolo": "Elden Ring (PC)",
-        "link": "https://www.instant-gaming.com/it/10854-comprare-elden-ring-pc-gioco-steam/?igr=gamer-1ded01f",
-        "prezzo": "29.99€",
-        "immagine": "https://images.instantgaming.com/products/10854/616x353/elden-ring-pc-gioco-steam-cover.jpg"
-    },
-    {
-        "titolo": "EA FC 24 (PS5)",
-        "link": "https://www.instant-gaming.com/it/15352-comprare-ea-sports-fc-24-ps5-gioco-psn/?igr=gamer-1ded01f",
-        "prezzo": "24.99€",
-        "immagine": "https://images.instantgaming.com/products/15352/616x353/ea-sports-fc-24-ps5-gioco-psn-cover.jpg"
-    },
-    {
-        "titolo": "Zelda: Tears of the Kingdom (Switch)",
-        "link": "https://www.instant-gaming.com/it/14868-comprare-the-legend-of-zelda-tears-of-the-kingdom-switch-gioco-nintendo/?igr=gamer-1ded01f",
-        "prezzo": "39.90€",
-        "immagine": "https://images.instantgaming.com/products/14868/616x353/the-legend-of-zelda-tears-of-the-kingdom-switch-gioco-nintendo-cover.jpg"
-    }
+  {
+    "titolo": "Elden Ring (PC)",
+    "link": "https://www.instant-gaming.com/it/10854-comprare-elden-ring-pc-gioco-steam/?igr=gamer-1ded01f",
+    "prezzo": "29.99€",
+    "immagine": "https://images.instantgaming.com/products/10854/616x353/elden-ring-pc-gioco-steam-cover.jpg"
+  },
+  {
+    "titolo": "EA FC 24 (PS5)",
+    "link": "https://www.instant-gaming.com/it/15352-comprare-ea-sports-fc-24-ps5-gioco-psn/?igr=gamer-1ded01f",
+    "prezzo": "24.99€",
+    "immagine": "https://images.instantgaming.com/products/15352/616x353/ea-sports-fc-24-ps5-gioco-psn-cover.jpg"
+  },
+  {
+    "titolo": "Zelda: Tears of the Kingdom (Switch)",
+    "link": "https://www.instant-gaming.com/it/14868-comprare-the-legend-of-zelda-tears-of-the-kingdom-switch-gioco-nintendo/?igr=gamer-1ded01f",
+    "prezzo": "39.90€",
+    "immagine": "https://images.instantgaming.com/products/14868/616x353/the-legend-of-zelda-tears-of-the-kingdom-switch-gioco-nintendo-cover.jpg"
+  },
+  {
+    "titolo": "Cyberpunk 2077 (PC)",
+    "link": "https://www.instant-gaming.com/it/921-comprare-cyberpunk-2077-pc-gioco-gog-com/?igr=gamer-1ded01f",
+    "prezzo": "19.49€",
+    "immagine": "https://images.instantgaming.com/products/921/616x353/cyberpunk-2077-pc-gioco-gog-com-cover.jpg"
+  },
+  {
+    "titolo": "Hogwarts Legacy (Xbox Series X|S)",
+    "link": "https://www.instant-gaming.com/it/14356-comprare-hogwarts-legacy-xbox-series-x-s-gioco-microsoft-store/?igr=gamer-1ded01f",
+    "prezzo": "44.89€",
+    "immagine": "https://images.instantgaming.com/products/14356/616x353/hogwarts-legacy-xbox-series-x-s-gioco-microsoft-store-cover.jpg"
+  }
 ]
 
 def pubblica_offerta():
