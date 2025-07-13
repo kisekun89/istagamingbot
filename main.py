@@ -1,57 +1,68 @@
-import telebot
 import requests
 import time
+import telebot
 from bs4 import BeautifulSoup
 
-BOT_TOKEN = '7267062520:AAHPb1Wy1VbsvZ9qBYO-pbaQ6G7PqQbF_KQ'
-CHANNEL_ID = '@mangagaming_deals'
-AFFILIATE_CODE = '?igr=gamer-1ded01f'
+TOKEN = '7267062520:AAHPb1Wy1VbsvZ9qBYO-pbaQ6G7PqQbF_KQ'
+CHANNEL_ID = "@mangagaming_deals"
+URLS = [
+    "https://www.instant-gaming.com/it/ricerca/?platform%5B0%5D=1",
+    "https://www.instant-gaming.com/it/ricerca/?platform%5B0%5D=2",
+    "https://www.instant-gaming.com/it/ricerca/?platform%5B0%5D=3",
+    "https://www.instant-gaming.com/it/ricerca/?platform%5B0%5D=4",
+]
 
-def get_offer():
-    url = 'https://www.instant-gaming.com/it/pc/'
-    headers = {'User-Agent': 'Mozilla/5.0'}
-    response = requests.get(url, headers=headers)
+AFFILIATE_TAG = "?igr=gamer-1ded01f"
+bot = telebot.TeleBot(TOKEN)
 
-    if response.status_code != 200:
-        return None
-
-    soup = BeautifulSoup(response.text, 'html.parser')
-    first_game = soup.select_one('.item')
-
-    if not first_game:
-        return None
-
-    title = first_game.select_one('.name').get_text(strip=True)
-    price = first_game.select_one('.price').get_text(strip=True)
-
-    image_tag = first_game.select_one('img')
-    image = image_tag['data-src'] if image_tag and image_tag.has_attr('data-src') else None
-
-    link_tag = first_game.select_one('a')
-    if not link_tag or not link_tag.get('href'):
-        return None
-
-    link = 'https://www.instant-gaming.com' + link_tag.get('href') + AFFILIATE_CODE
-    message = f"🎮 <b>{title}</b>\n💸 Prezzo: <b>{price}</b>\n👉 <a href='{link}'>Compra ora su Instant Gaming</a>"
-    return message, image
-
-def send_offer(bot):
+def estrai_offerte(url):
     try:
-        offer = get_offer()
-        if offer:
-            message, image = offer
-            if image and image.startswith('http'):
-                bot.send_photo(CHANNEL_ID, image, caption=message, parse_mode='HTML')
-            else:
-                bot.send_message(CHANNEL_ID, message, parse_mode='HTML')
-            print("✅ Offerta inviata.")
-        else:
-            print("⚠️ Nessuna offerta trovata.")
+        r = requests.get(url)
+        soup = BeautifulSoup(r.text, "html.parser")
+        items = soup.find_all("div", class_="item force-badge")
+        giochi = []
+
+        for item in items:
+            titolo = item.find("div", class_="name").text.strip()
+            prezzo = item.find("div", class_="price").text.strip()
+            img_tag = item.find("img")
+            link_tag = item.find("a", href=True)
+
+            if not titolo or not prezzo or not img_tag or not link_tag:
+                continue
+
+            img = img_tag["src"]
+            link = "https://www.instant-gaming.com" + link_tag["href"]
+
+            giochi.append({
+                "titolo": titolo,
+                "prezzo": prezzo,
+                "img": img,
+                "link": link + AFFILIATE_TAG
+            })
+
+        return giochi
+
+    except Exception as e:
+        print(f"Errore estrazione: {e}")
+        return []
+
+def invia_offerta(gioco):
+    try:
+        text = f"🎮 <b>{gioco['titolo']}</b>\n💰 Prezzo: {gioco['prezzo']}\n🔗 <a href='{gioco['link']}'>Compra ora su Instant Gaming</a>"
+        bot.send_photo(CHANNEL_ID, gioco["img"], caption=text, parse_mode="HTML")
+        print("✔️ Offerta inviata.")
     except Exception as e:
         print(f"❌ Errore invio: {e}")
 
-if __name__ == '__main__':
-    bot = telebot.TeleBot(BOT_TOKEN)
-    while True:
-        send_offer(bot)
-        time.sleep(3600)
+if __name__ == "__main__":
+    tutti_i_giochi = []
+    for url in URLS:
+        giochi = estrai_offerte(url)
+        if giochi:
+            tutti_i_giochi.extend(giochi)
+
+    if tutti_i_giochi:
+        invia_offerta(tutti_i_giochi[0])
+    else:
+        print("⚠️ Nessuna offerta trovata.")
